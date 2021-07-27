@@ -1,0 +1,26 @@
+version: "3.9"
+services:
+  db:
+    image: postgres:alpine
+    volumes:
+      - ./tmp/db:/var/lib/postgresql/data
+    ports:
+      - 54320:5432
+    environment:
+      POSTGRES_PASSWORD: codeable
+  client:
+    image: codeableorg/postgres-client:latest
+    command: "bash -c 'while true; do sleep 1; done'"
+    volumes:
+      - .:/app
+      - ssh:/root/.ssh
+    environment:
+      GIT_USER_NAME: #Github username
+      GIT_USER_EMAIL: #Github email
+      PGPASSWORD: codeable
+    depends_on:
+      - db
+volumes:
+  ssh:
+    external: true
+    name: ssh
